@@ -10,7 +10,6 @@ namespace StudentSchedule
         Model model;
 
         public Student SelectedStudent { get => model.SelectedStudent; set => model.SelectedStudent = value; }
-        public Student SelectedStudentCopy { get; set; }
 
         public MvvmCommand BackToList { get; set; }
         public MvvmCommand SaveStudent { get; set; }
@@ -18,8 +17,14 @@ namespace StudentSchedule
         public void SetModel(Model model)
         {
             this.model = model;
-            BackToList = new MvvmCommand(() => PageManager.ChangePageTo(PageType.StudentList), () => true);
-            //SaveStudent = new MvvmCommand(() => model.SaveStudent(SelectedStudent), () => true);
+
+            BackToList = new MvvmCommand(
+                () => model.NoSaveStudent(), 
+                () => true);
+            SaveStudent = new MvvmCommand(
+                () => model.SaveStudent(), 
+                () => SelectedStudent != null && !( string.IsNullOrWhiteSpace(SelectedStudent.FirstName) ||
+                string.IsNullOrWhiteSpace(SelectedStudent.LastName)));
 
             model.SelectedStudentChanged += Model_SelectedStudentChanged;
         }
@@ -27,7 +32,6 @@ namespace StudentSchedule
         private void Model_SelectedStudentChanged(object sender, EventArgs e)
         {
             NotifyPropertyChanged("SelectedStudent");
-            NotifyPropertyChanged("SelectedStudentCopy");
         }
     }
 }

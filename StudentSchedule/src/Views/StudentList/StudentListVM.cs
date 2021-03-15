@@ -15,26 +15,27 @@ namespace StudentSchedule
         public MvvmCommand CreateStudent { get; set; }
         public MvvmCommand EditStudent { get; set; }
         public MvvmCommand RemoveStudent { get; set; }
-        public MvvmCommand ChooseDuty { get; set; }
-
+        public MvvmCommand Duty { get; set; }
+        
         public void SetModel(Model model)
         {
             this.model = model;
             Students = new ObservableCollection<Student>(model.GetStudents());
 
-            CreateStudent = new MvvmCommand(() => model.CreateStudent(), () => true);
-            EditStudent = new MvvmCommand(() => model.EditStudent(), () => SelectedStudent != null);
-            RemoveStudent = new MvvmCommand(() => model.RemoveStudent(), () => SelectedStudent != null);
-            ChooseDuty = new MvvmCommand(() => model.SetDuty(), () => Students.Count >= 2);
+            CreateStudent = new MvvmCommand(
+                () => model.CreateStudent(), 
+                () => true);
+            EditStudent = new MvvmCommand(
+                () => model.EditStudent(), 
+                () => SelectedStudent != null);
+            RemoveStudent = new MvvmCommand(
+                () => model.RemoveStudent(), 
+                () => SelectedStudent != null);
+            Duty = new MvvmCommand(
+                () => model.Duty(), 
+                () => Students.Count >= 2);
 
             model.StudentsChanged += Model_StudentsChanged;
-            PageManager.CurrentPageChanged += PageManager_CurrentPageChanged;
-        }
-
-        private void PageManager_CurrentPageChanged(object sender, PageType e)
-        {
-            Students = new ObservableCollection<Student>(model.GetStudents());
-            NotifyPropertyChanged("Students");
         }
 
         private void Model_StudentsChanged(object sender, EventArgs e)

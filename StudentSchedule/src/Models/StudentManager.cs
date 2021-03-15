@@ -12,16 +12,7 @@ namespace StudentSchedule
 
         public StudentManager()
         {
-            Students.Add(new Student { FirstName = "Ммм...", LastName = "Хммм...", FatherName = "Хихи..."});
-            Students.Add(new Student { FirstName = "Хаха...", LastName = "Хехе...", FatherName = "Хихи..."});
-            Load();
-        }
-
-        internal void SaveStudent(Student orig, Student copy)
-        {
-            int index = Students.IndexOf(orig);
-            Students[index] = copy;
-            Save();
+            LoadStudentList();
         }
 
         internal Student CreateStudent()
@@ -31,46 +22,57 @@ namespace StudentSchedule
             return newStudent;
         }
 
-        internal void SetOnDuty(Student firstStudent, Student secondStudent)
-        {
-            throw new NotImplementedException();
-        }
-
         internal void RemoveStudent(Student student)
         {
             Students.Remove(student);
-            Save();
+            SaveStudentList();
         }
 
-        internal void SetDuty()
+        internal (Student, Student) GetDuty()
         {
-            int duties = 0;
+            Student firstStudent;
+            Student secondStudent;
             Random rand = new Random();
-            foreach(Student student in Students)
-                duties += student.DutyList.Count;
-            int average = duties / Students.Count;
+
+            int totalDuties = 0;
+            foreach (Student student in Students)
+                totalDuties += student.DutyList.Count;
+            double avg = (double)totalDuties / Students.Count;
 
             List<Student> dutyStudents = new List<Student>();
             foreach (Student student in Students)
-                if (student.DutyList.Count <= average)
+                if (student.DutyList.Count <= avg)
                     dutyStudents.Add(student);
 
-            Student firstStudent = dutyStudents[rand.Next(0, dutyStudents.Count-1)];
+            firstStudent = dutyStudents[new Random().Next(0, dutyStudents.Count - 1)];
             dutyStudents.Remove(firstStudent);
-            Student secondStudent = dutyStudents[rand.Next(0, dutyStudents.Count - 1)];
 
-            Save();
+            if (dutyStudents.Count == 0)
+                secondStudent = Students[rand.Next(0, Students.Count - 1)];
+            else
+                secondStudent = dutyStudents[rand.Next(0, dutyStudents.Count - 1)];
+
+            return (firstStudent, secondStudent);
         }
 
-        public void Save()
+        internal void SetDuty(Student firstStudent, Student secondStudent)
+        {
+            firstStudent.DutyList.Add(DateTime.Today);
+            secondStudent.DutyList.Add(DateTime.Today);
+            SaveStudentList();
+        }
+
+        private const string path = "students.db";
+
+        public void SaveStudentList()
         {
             var json = JsonSerializer.Serialize(Students, typeof(List<Student>));
-            File.WriteAllText("clients.db", json);
+            File.WriteAllText(path, json);
         }
 
-        public void Load()
+        public void LoadStudentList()
         {
-            string file = "clients.db";
+            string file = path;
             if (!File.Exists(file) || new FileInfo(file).Length == 0)
             {
                 Students = new List<Student>();

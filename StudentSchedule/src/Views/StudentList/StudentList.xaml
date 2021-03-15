@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:StudentSchedule"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800" d:Background="White"
+      d:DesignHeight="450" d:DesignWidth="600" d:Background="White"
       Title="StudentList">
 
     <Grid Margin="5">
@@ -30,10 +30,10 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Button Content="Создать" Command="{Binding CreateStudent}" Margin="0 5 5 0" Grid.Column="0"/>
-            <Button Content="Редактировать" Command="{Binding EditStudent}" Margin="0 5 5 0" Grid.Column="2"/>
-            <Button Content="Удалить" Command="{Binding RemoveStudent}" Margin="0 5 5 0" Grid.Column="4"/>
-            <Button Content="Назначить дежурных" Command="{Binding ChooseDuty}" Margin="0 5 0 0" Grid.Column="6"/>
+            <Button Content="Создать" Command="{Binding CreateStudent}" Padding="3" Margin="0 5 5 0" Grid.Column="0"/>
+            <Button Content="Редактировать" Command="{Binding EditStudent}" Padding="3" Margin="0 5 5 0" Grid.Column="2"/>
+            <Button Content="Удалить" Command="{Binding RemoveStudent}" Padding="3" Margin="0 5 5 0" Grid.Column="4"/>
+            <Button Content="Назначить дежурных" Command="{Binding Duty}" Padding="3" Margin="0 5 0 0" Grid.Column="6"/>
         </Grid>
     </Grid>
 </Page>
