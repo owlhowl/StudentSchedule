@@ -13,8 +13,22 @@ namespace StudentSchedule
         public event EventHandler StudentsChanged;
         public event EventHandler SelectedStudentChanged;
         public event EventHandler OnDutyChanged;
+        public event EventHandler<Student> BirthdayStudentChanged;
 
-        public Student SelectedStudent { get => selectedStudent; set { selectedStudent = value; SelectedStudentChanged?.Invoke(this, null); }}
+        public Student SelectedStudent 
+        { 
+            get => selectedStudent; 
+            set 
+            { 
+                selectedStudent = value; 
+                SelectedStudentChanged?.Invoke(this, null); 
+            }
+        }
+
+        internal void GetBirthdayStudent()
+        {
+            BirthdayStudentChanged?.Invoke(this, studentManager.GetBirthdayStudent());
+        }
 
         internal List<Student> GetStudents()
         {
@@ -26,17 +40,27 @@ namespace StudentSchedule
             studentManager.SaveStudentList();
         }
 
+        internal bool CanSave()
+        {
+            return SelectedStudent != null && !(string.IsNullOrWhiteSpace(SelectedStudent.FirstName) ||
+                string.IsNullOrWhiteSpace(SelectedStudent.LastName) ||
+                DateTime.Today < SelectedStudent.Birthday ||
+                SelectedStudent.Birthday < new DateTime(1900, 1, 1));
+        }
+
         internal void SaveStudent()
         {
             PageManager.ChangePageTo(PageType.StudentList);
             studentManager.SaveStudentList();
             StudentsChanged?.Invoke(this, null);
+            GetBirthdayStudent();
         }
 
         internal void NoSaveStudent()
         {
             PageManager.ChangePageTo(PageType.StudentList);
             studentManager.LoadStudentList();
+            SelectedStudent = null;
             StudentsChanged?.Invoke(this, null);
         }
 
@@ -55,6 +79,7 @@ namespace StudentSchedule
         {
             studentManager.RemoveStudent(SelectedStudent);
             StudentsChanged?.Invoke(this, null);
+            GetBirthdayStudent();
         }
 
         internal (Student, Student) GetDuty() 

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Text;
+using System.Threading;
 using Mvvm1125;
 
 namespace StudentSchedule
@@ -11,6 +13,7 @@ namespace StudentSchedule
         Model model;
         public ObservableCollection<Student> Students { get; set; }
         public Student SelectedStudent { get => model.SelectedStudent; set => model.SelectedStudent = value; }
+        public string BirthdayText { get; set; }
 
         public MvvmCommand CreateStudent { get; set; }
         public MvvmCommand EditStudent { get; set; }
@@ -36,6 +39,14 @@ namespace StudentSchedule
                 () => Students.Count >= 2);
 
             model.StudentsChanged += Model_StudentsChanged;
+            model.BirthdayStudentChanged += Model_BirthdayStudentChanged;
+            model.GetBirthdayStudent();
+        }
+
+        private void Model_BirthdayStudentChanged(object sender, Student e)
+        {
+            BirthdayText = $"Скоро ДР: {e.LastName} {e.FirstName} - {e.Birthday.ToShortDateString()}";
+            NotifyPropertyChanged("BirthdayText");
         }
 
         private void Model_StudentsChanged(object sender, EventArgs e)

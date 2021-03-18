@@ -12,6 +12,7 @@
         <Grid.RowDefinitions>
             <RowDefinition/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <ListBox ItemsSource="{Binding Students}" SelectedItem="{Binding SelectedStudent}">
             <ListBox.ItemTemplate>
@@ -20,7 +21,8 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <Grid Grid.Row="1">
+        <TextBlock Text="{Binding BirthdayText}" HorizontalAlignment="Center" FontSize="16" Grid.Row="1"/>
+        <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition Width="Auto"/>

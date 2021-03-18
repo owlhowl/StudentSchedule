@@ -3,17 +3,28 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.Json;
+using System.Linq;
 
 namespace StudentSchedule
 {
     public class StudentManager
     {
-        public List<Student> Students { get; set; } = new List<Student>();
+        public List<Student> Students { get; set; }
 
         public StudentManager()
         {
             LoadStudentList();
         }
+
+        //public List<StudentView> GetStudentViews()
+        //{
+        //    List<StudentView> studentView = new List<StudentView>();
+        //    foreach(Student s in Students)
+        //    {
+        //        studentView.Add(new StudentView { LastName = s.LastName, FirstName = s.FirstName, FatherName = s.FatherName, Birthday = s.Birthday, DutyList = s.DutyList });
+        //    }
+        //    return studentView;
+        //}
 
         internal Student CreateStudent()
         {
@@ -26,6 +37,16 @@ namespace StudentSchedule
         {
             Students.Remove(student);
             SaveStudentList();
+        }
+
+        internal Student GetBirthdayStudent()
+        {
+            // Calculate closest birthday student
+            int today = DateTime.Today.DayOfYear;
+            var birthdays = Students.Select(s => s.Birthday.DayOfYear - today);
+            var birthdaysSorted = new List<int>(birthdays.Select(b => b >= 0 ? b : int.MaxValue));
+            int indexOfMin = birthdaysSorted.IndexOf(birthdaysSorted.Min());
+            return Students[indexOfMin];
         }
 
         internal (Student, Student) GetDuty()
@@ -59,13 +80,13 @@ namespace StudentSchedule
         {
             firstStudent.DutyList.Add(DateTime.Today);
             secondStudent.DutyList.Add(DateTime.Today);
-            SaveStudentList();
         }
 
         private const string path = "students.db";
 
         public void SaveStudentList()
         {
+            Students.Sort((s1, s2) => s1.LastName.CompareTo(s2.LastName));
             var json = JsonSerializer.Serialize(Students, typeof(List<Student>));
             File.WriteAllText(path, json);
         }

@@ -23,8 +23,7 @@ namespace StudentSchedule
                 () => true);
             SaveStudent = new MvvmCommand(
                 () => model.SaveStudent(), 
-                () => SelectedStudent != null && !( string.IsNullOrWhiteSpace(SelectedStudent.FirstName) ||
-                string.IsNullOrWhiteSpace(SelectedStudent.LastName)));
+                () => model.CanSave());
 
             model.SelectedStudentChanged += Model_SelectedStudentChanged;
         }

@@ -26,6 +26,8 @@
                 <TextBox Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Top"/>
                 <TextBlock Text="Отчество" DockPanel.Dock="Top" Margin="0 5 0 0"/>
                 <TextBox Text="{Binding FatherName, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Top"/>
+                <TextBlock Text="Дата рождения" DockPanel.Dock="Top" Margin="0 5 0 0"/>
+                <DatePicker SelectedDate="{Binding Birthday, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Top"/>
                 <TextBlock Text="История дежурств" DockPanel.Dock="Top" Margin="0 5 0 0"/>
                 <ListBox ItemsSource="{Binding DutyList}" DockPanel.Dock="Bottom"/>
             </DockPanel>
