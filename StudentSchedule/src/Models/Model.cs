@@ -8,22 +8,11 @@ namespace StudentSchedule
     public class Model
     {
         StudentManager studentManager = new StudentManager();
-        Student selectedStudent;
 
         public event EventHandler StudentsChanged;
-        public event EventHandler SelectedStudentChanged;
+        public event EventHandler<Student> SelectedStudentChanged;
         public event EventHandler OnDutyChanged;
         public event EventHandler<Student> BirthdayStudentChanged;
-
-        public Student SelectedStudent 
-        { 
-            get => selectedStudent; 
-            set 
-            { 
-                selectedStudent = value; 
-                SelectedStudentChanged?.Invoke(this, null); 
-            }
-        }
 
         internal void GetBirthdayStudent()
         {
@@ -40,17 +29,16 @@ namespace StudentSchedule
             studentManager.SaveStudentList();
         }
 
-        internal bool CanSave()
+        internal bool CanSave(Student selectedStudent)
         {
-            return SelectedStudent != null && !(string.IsNullOrWhiteSpace(SelectedStudent.FirstName) ||
-                string.IsNullOrWhiteSpace(SelectedStudent.LastName) ||
-                DateTime.Today < SelectedStudent.Birthday ||
-                SelectedStudent.Birthday < new DateTime(1900, 1, 1));
+            return selectedStudent != null && !(string.IsNullOrWhiteSpace(selectedStudent.FirstName) ||
+                string.IsNullOrWhiteSpace(selectedStudent.LastName) ||  
+                DateTime.Today < selectedStudent.Birthday ||
+                selectedStudent.Birthday < new DateTime(1900, 1, 1));
         }
 
         internal void SaveStudent()
         {
-            PageManager.ChangePageTo(PageType.StudentList);
             studentManager.SaveStudentList();
             StudentsChanged?.Invoke(this, null);
             GetBirthdayStudent();
@@ -58,26 +46,23 @@ namespace StudentSchedule
 
         internal void NoSaveStudent()
         {
-            PageManager.ChangePageTo(PageType.StudentList);
             studentManager.LoadStudentList();
-            SelectedStudent = null;
             StudentsChanged?.Invoke(this, null);
         }
 
-        internal void CreateStudent()
+        internal Student CreateStudent()
         {
-            SelectedStudent = studentManager.CreateStudent();
-            PageManager.ChangePageTo(PageType.EditStudent);
+            return studentManager.CreateStudent();
         }
 
-        internal void EditStudent()
+        internal void EditStudent(Student selectedStudent)
         {
-            PageManager.ChangePageTo(PageType.EditStudent);
+            SelectedStudentChanged?.Invoke(this, selectedStudent);
         }
 
-        internal void RemoveStudent()
+        internal void RemoveStudent(Student student)
         {
-            studentManager.RemoveStudent(SelectedStudent);
+            studentManager.RemoveStudent(student);
             StudentsChanged?.Invoke(this, null);
             GetBirthdayStudent();
         }
@@ -89,13 +74,11 @@ namespace StudentSchedule
 
         internal void Duty()
         {
-            PageManager.ChangePageTo(PageType.DutyList);
             OnDutyChanged?.Invoke(this, null);
         }
 
         internal void SetDuty(Student firstStudent, Student secondStudent)
         {
-            PageManager.ChangePageTo(PageType.StudentList);
             studentManager.SetDuty(firstStudent, secondStudent);
         }
     }

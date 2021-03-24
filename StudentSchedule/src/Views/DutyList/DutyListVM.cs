@@ -23,7 +23,7 @@ namespace StudentSchedule
                 () => PageManager.ChangePageTo(PageType.StudentList), 
                 () => true);
             Agree = new MvvmCommand(
-                () => model.SetDuty(FirstStudent, SecondStudent), 
+                () => { PageManager.ChangePageTo(PageType.StudentList); model.SetDuty(FirstStudent, SecondStudent); }, 
                 () => true);
 
             model.OnDutyChanged += Model_OnDutyChanged;

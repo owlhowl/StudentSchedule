@@ -9,7 +9,7 @@ namespace StudentSchedule
     {
         Model model;
 
-        public Student SelectedStudent { get => model.SelectedStudent; set => model.SelectedStudent = value; }
+        public Student SelectedStudent { get; set; }
 
         public MvvmCommand BackToList { get; set; }
         public MvvmCommand SaveStudent { get; set; }
@@ -19,17 +19,18 @@ namespace StudentSchedule
             this.model = model;
 
             BackToList = new MvvmCommand(
-                () => model.NoSaveStudent(), 
+                () => { PageManager.ChangePageTo(PageType.StudentList); model.NoSaveStudent(); }, 
                 () => true);
             SaveStudent = new MvvmCommand(
-                () => model.SaveStudent(), 
-                () => model.CanSave());
+                () => { PageManager.ChangePageTo(PageType.StudentList); model.SaveStudent(); }, 
+                () => model.CanSave(SelectedStudent));
 
             model.SelectedStudentChanged += Model_SelectedStudentChanged;
         }
 
-        private void Model_SelectedStudentChanged(object sender, EventArgs e)
+        private void Model_SelectedStudentChanged(object sender, Student e)
         {
+            SelectedStudent = e;
             NotifyPropertyChanged("SelectedStudent");
         }
     }

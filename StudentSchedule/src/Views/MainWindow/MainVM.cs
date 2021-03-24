@@ -19,11 +19,11 @@ namespace StudentSchedule
             model = new Model();
             PageManager.SetModel(model);
             CurrentPage = PageManager.GetPageByType(PageType.StudentList);
-            PageManager.CurrentPageChanged += PageContainer_CurrentPageChanged;
+            PageManager.CurrentPageChanged += PageManager_CurrentPageChanged;
             Application.Current.Exit += (o, e) => model.Save();
         }
 
-        void PageContainer_CurrentPageChanged(object sender, PageType e)
+        void PageManager_CurrentPageChanged(object sender, PageType e)
         {
             CurrentPage = PageManager.GetPageByType(e);
             NotifyPropertyChanged("CurrentPage");

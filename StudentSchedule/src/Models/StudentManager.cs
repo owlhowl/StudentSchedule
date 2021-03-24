@@ -16,16 +16,6 @@ namespace StudentSchedule
             LoadStudentList();
         }
 
-        //public List<StudentView> GetStudentViews()
-        //{
-        //    List<StudentView> studentView = new List<StudentView>();
-        //    foreach(Student s in Students)
-        //    {
-        //        studentView.Add(new StudentView { LastName = s.LastName, FirstName = s.FirstName, FatherName = s.FatherName, Birthday = s.Birthday, DutyList = s.DutyList });
-        //    }
-        //    return studentView;
-        //}
-
         internal Student CreateStudent()
         {
             Student newStudent = new Student();

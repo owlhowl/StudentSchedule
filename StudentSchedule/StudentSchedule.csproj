@@ -7,13 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="Mvvm1125">
-      <HintPath>Mvvm1125.dll</HintPath>
-    </Reference>
+    <Page Include="App.xaml" />
   </ItemGroup>
 
   <ItemGroup>
-    <Page Include="App.xaml" />
+    <Reference Include="Mvvm1125">
+      <HintPath>src\Resources\Mvvm1125.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

@@ -12,30 +12,33 @@ namespace StudentSchedule
     {
         Model model;
         public ObservableCollection<Student> Students { get; set; }
-        public Student SelectedStudent { get => model.SelectedStudent; set => model.SelectedStudent = value; }
+        public Student SelectedStudent { get; set; }
         public string BirthdayText { get; set; }
 
         public MvvmCommand CreateStudent { get; set; }
         public MvvmCommand EditStudent { get; set; }
         public MvvmCommand RemoveStudent { get; set; }
         public MvvmCommand Duty { get; set; }
-        
+
         public void SetModel(Model model)
         {
             this.model = model;
             Students = new ObservableCollection<Student>(model.GetStudents());
 
             CreateStudent = new MvvmCommand(
-                () => model.CreateStudent(), 
+                () => { PageManager.ChangePageTo(PageType.EditStudent); model.EditStudent(model.CreateStudent()); },
                 () => true);
+
             EditStudent = new MvvmCommand(
-                () => model.EditStudent(), 
+                () => { PageManager.ChangePageTo(PageType.EditStudent); model.EditStudent(SelectedStudent); },
                 () => SelectedStudent != null);
+
             RemoveStudent = new MvvmCommand(
-                () => model.RemoveStudent(), 
+                () => model.RemoveStudent(SelectedStudent),
                 () => SelectedStudent != null);
+
             Duty = new MvvmCommand(
-                () => model.Duty(), 
+                () => { PageManager.ChangePageTo(PageType.DutyList); model.Duty(); }, 
                 () => Students.Count >= 2);
 
             model.StudentsChanged += Model_StudentsChanged;
